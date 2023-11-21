@@ -2,6 +2,8 @@ package com.fabiocarlesso.forum.service
 
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
 import com.fabiocarlesso.forum.dto.TopicoView
+import com.fabiocarlesso.forum.mapper.TopicoFormMapper
+import com.fabiocarlesso.forum.mapper.TopicoViewMapper
 import com.fabiocarlesso.forum.model.Curso
 import com.fabiocarlesso.forum.model.Topico
 import com.fabiocarlesso.forum.model.Usuario
@@ -11,8 +13,8 @@ import java.util.stream.Collectors
 @Service
 class TopicoService(
     private var topicos: List<Topico> = ArrayList(),
-    private var cursoService: CursoService,
-    private var usuarioService: UsuarioService
+    private val topicoViewMapper: TopicoViewMapper,
+    private val topicoFormMapper: TopicoFormMapper
     ) {
     init{
         val topico = Topico(
@@ -34,13 +36,7 @@ class TopicoService(
     }
     fun listar(): List<TopicoView> {
         return topicos.stream().map{
-            t -> TopicoView(
-                id = t.id,
-                titulo = t.titulo,
-                mensagem = t.mensagem,
-                dataCriacao = t.dataCriacao,
-                status = t.status
-            )
+            t -> topicoViewMapper.map(t)
         }.collect(Collectors.toList())
     }
 
@@ -51,23 +47,12 @@ class TopicoService(
             }
             .findFirst()
             .get()
-        return TopicoView(
-            id = topico.id,
-            titulo = topico.titulo,
-            mensagem = topico.mensagem,
-            dataCriacao = topico.dataCriacao,
-            status = topico.status
-        )
+        return topicoViewMapper.map(topico)
     }
 
     fun cadastrar(topico: NovoTopicoForm) {
-        topicos = topicos.plus(Topico(
-                        id = topicos.size.toLong() + 1,
-                        titulo = topico.titulo,
-                        mensagem = topico.mensagem,
-                        curso = cursoService.buscarPorId(topico.idCurso),
-                        autor = usuarioService.buscarPorId(topico.idAutor),
-                    )
-        )
+        val novoTopicoNaLista = topicoFormMapper.map(topico)
+        novoTopicoNaLista.id = topicos.size.toLong() + 1
+        topicos = topicos.plus(novoTopicoNaLista)
     }
 }
