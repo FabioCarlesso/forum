@@ -1,6 +1,6 @@
 package com.fabiocarlesso.forum.dto
 
-data class NovoTopicoDTO (
+data class NovoTopicoForm (
         val titulo: String,
         val mensagem: String,
         val idCurso: Long,

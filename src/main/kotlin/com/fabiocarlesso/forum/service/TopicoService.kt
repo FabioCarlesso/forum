@@ -1,10 +1,12 @@
 package com.fabiocarlesso.forum.service
 
-import com.fabiocarlesso.forum.dto.NovoTopicoDTO
+import com.fabiocarlesso.forum.dto.NovoTopicoForm
+import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.model.Curso
 import com.fabiocarlesso.forum.model.Topico
 import com.fabiocarlesso.forum.model.Usuario
 import org.springframework.stereotype.Service
+import java.util.stream.Collectors
 
 @Service
 class TopicoService(
@@ -30,20 +32,35 @@ class TopicoService(
         )
         topicos = listOf(topico)
     }
-    fun listar(): List<Topico> {
-        return topicos
+    fun listar(): List<TopicoView> {
+        return topicos.stream().map{
+            t -> TopicoView(
+                id = t.id,
+                titulo = t.titulo,
+                mensagem = t.mensagem,
+                dataCriacao = t.dataCriacao,
+                status = t.status
+            )
+        }.collect(Collectors.toList())
     }
 
-    fun buscarPorId(id: Long): Topico {
-        return topicos.stream()
+    fun buscarPorId(id: Long): TopicoView {
+        val topico = topicos.stream()
             .filter { t ->
                 t.id == id
             }
             .findFirst()
             .get()
+        return TopicoView(
+            id = topico.id,
+            titulo = topico.titulo,
+            mensagem = topico.mensagem,
+            dataCriacao = topico.dataCriacao,
+            status = topico.status
+        )
     }
 
-    fun cadastrar(topico: NovoTopicoDTO) {
+    fun cadastrar(topico: NovoTopicoForm) {
         topicos = topicos.plus(Topico(
                         id = topicos.size.toLong() + 1,
                         titulo = topico.titulo,

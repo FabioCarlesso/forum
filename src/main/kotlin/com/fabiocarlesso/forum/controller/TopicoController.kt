@@ -1,7 +1,7 @@
 package com.fabiocarlesso.forum.controller
 
-import com.fabiocarlesso.forum.dto.NovoTopicoDTO
-import com.fabiocarlesso.forum.model.Topico
+import com.fabiocarlesso.forum.dto.NovoTopicoForm
+import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.service.TopicoService
 import org.springframework.web.bind.annotation.*
 
@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/topicos")
 class TopicoController(private val service: TopicoService) {
     @GetMapping
-    fun listar(): List<Topico>{
+    fun listar(): List<TopicoView>{
         return service.listar()
     }
     @GetMapping("/{id}")
-    fun buscarPorId(@PathVariable id: Long): Topico {
+    fun buscarPorId(@PathVariable id: Long): TopicoView {
         return service.buscarPorId(id)
     }
     @PostMapping
-    fun cadastrar(@RequestBody topico: NovoTopicoDTO){
+    fun cadastrar(@RequestBody topico: NovoTopicoForm){
         service.cadastrar(topico)
     }
 }
