@@ -3,6 +3,7 @@ package com.fabiocarlesso.forum.controller
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
 import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.service.TopicoService
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -17,7 +18,7 @@ class TopicoController(private val service: TopicoService) {
         return service.buscarPorId(id)
     }
     @PostMapping
-    fun cadastrar(@RequestBody topico: NovoTopicoForm){
+    fun cadastrar(@RequestBody @Valid topico: NovoTopicoForm){
         service.cadastrar(topico)
     }
 }
