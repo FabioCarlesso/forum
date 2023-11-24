@@ -72,4 +72,9 @@ class TopicoService(
             dataCriacao = topicoEncontrado.dataCriacao
         ))
     }
+
+    fun deletar(id: Long) {
+        val topicoEncontrado = findTopicoById(id)
+        topicos = topicos.minus(topicoEncontrado)
+    }
 }
