@@ -1,5 +1,6 @@
 package com.fabiocarlesso.forum.controller
 
+import com.fabiocarlesso.forum.dto.AtualizacaoTopicoForm
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
 import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.service.TopicoService
@@ -20,5 +21,9 @@ class TopicoController(private val service: TopicoService) {
     @PostMapping
     fun cadastrar(@RequestBody @Valid topico: NovoTopicoForm){
         service.cadastrar(topico)
+    }
+    @PutMapping
+    fun atualizar(@RequestBody @Valid topico: AtualizacaoTopicoForm){
+        service.atualizar(topico)
     }
 }

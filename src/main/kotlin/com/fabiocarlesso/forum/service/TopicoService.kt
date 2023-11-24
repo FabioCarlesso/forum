@@ -1,5 +1,6 @@
 package com.fabiocarlesso.forum.service
 
+import com.fabiocarlesso.forum.dto.AtualizacaoTopicoForm
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
 import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.mapper.TopicoFormMapper
@@ -41,18 +42,34 @@ class TopicoService(
     }
 
     fun buscarPorId(id: Long): TopicoView {
-        val topico = topicos.stream()
-            .filter { t ->
-                t.id == id
-            }
-            .findFirst()
-            .get()
+        val topico = findTopicoById(id)
         return topicoViewMapper.map(topico)
     }
+
+    private fun findTopicoById(id: Long) = topicos.stream()
+        .filter { t ->
+            t.id == id
+        }
+        .findFirst()
+        .get()
 
     fun cadastrar(topico: NovoTopicoForm) {
         val novoTopicoNaLista = topicoFormMapper.map(topico)
         novoTopicoNaLista.id = topicos.size.toLong() + 1
         topicos = topicos.plus(novoTopicoNaLista)
+    }
+
+    fun atualizar(topico: AtualizacaoTopicoForm) {
+        val topicoEncontrado = findTopicoById(topico.id)
+        topicos = topicos.minus(topicoEncontrado).plus(Topico(
+            id = topico.id,
+            titulo = topico.titulo,
+            mensagem = topico.mensagem,
+            autor = topicoEncontrado.autor,
+            curso = topicoEncontrado.curso,
+            respostas = topicoEncontrado.respostas,
+            status = topicoEncontrado.status,
+            dataCriacao = topicoEncontrado.dataCriacao
+        ))
     }
 }
