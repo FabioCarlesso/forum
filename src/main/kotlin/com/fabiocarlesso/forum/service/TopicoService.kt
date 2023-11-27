@@ -53,15 +53,16 @@ class TopicoService(
         .findFirst()
         .get()
 
-    fun cadastrar(topico: NovoTopicoForm) {
+    fun cadastrar(topico: NovoTopicoForm): TopicoView {
         val novoTopicoNaLista = topicoFormMapper.map(topico)
         novoTopicoNaLista.id = topicos.size.toLong() + 1
         topicos = topicos.plus(novoTopicoNaLista)
+        return topicoViewMapper.map(novoTopicoNaLista)
     }
 
-    fun atualizar(topico: AtualizacaoTopicoForm) {
+    fun atualizar(topico: AtualizacaoTopicoForm): TopicoView {
         val topicoEncontrado = findTopicoById(topico.id)
-        topicos = topicos.minus(topicoEncontrado).plus(Topico(
+        val newElement = Topico(
             id = topico.id,
             titulo = topico.titulo,
             mensagem = topico.mensagem,
@@ -70,7 +71,9 @@ class TopicoService(
             respostas = topicoEncontrado.respostas,
             status = topicoEncontrado.status,
             dataCriacao = topicoEncontrado.dataCriacao
-        ))
+        )
+        topicos = topicos.minus(topicoEncontrado).plus(newElement)
+        return topicoViewMapper.map(newElement)
     }
 
     fun deletar(id: Long) {
