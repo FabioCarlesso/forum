@@ -3,6 +3,7 @@ package com.fabiocarlesso.forum.service
 import com.fabiocarlesso.forum.dto.AtualizacaoTopicoForm
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
 import com.fabiocarlesso.forum.dto.TopicoView
+import com.fabiocarlesso.forum.exception.NotFoundException
 import com.fabiocarlesso.forum.mapper.TopicoFormMapper
 import com.fabiocarlesso.forum.mapper.TopicoViewMapper
 import com.fabiocarlesso.forum.model.Curso
@@ -15,7 +16,8 @@ import java.util.stream.Collectors
 class TopicoService(
     private var topicos: List<Topico> = ArrayList(),
     private val topicoViewMapper: TopicoViewMapper,
-    private val topicoFormMapper: TopicoFormMapper
+    private val topicoFormMapper: TopicoFormMapper,
+    private val notFoundMessage: String = "Topico nao encontrado!"
     ) {
     init{
         val topico = Topico(
@@ -51,7 +53,7 @@ class TopicoService(
             t.id == id
         }
         .findFirst()
-        .get()
+        .orElseThrow{NotFoundException(notFoundMessage)}
 
     fun cadastrar(topico: NovoTopicoForm): TopicoView {
         val novoTopicoNaLista = topicoFormMapper.map(topico)
