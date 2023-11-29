@@ -44,7 +44,7 @@ class TopicoService(
     }
 
     fun buscarPorId(id: Long): TopicoView {
-        val topico = findTopicoById(id)
+        val topico = findTopicoById(id).orElseThrow{NotFoundException(notFoundMessage)}
         return topicoViewMapper.map(topico)
     }
 
@@ -53,7 +53,6 @@ class TopicoService(
             t.id == id
         }
         .findFirst()
-        .orElseThrow{NotFoundException(notFoundMessage)}
 
     fun cadastrar(topico: NovoTopicoForm): TopicoView {
         val novoTopicoNaLista = topicoFormMapper.map(topico)
@@ -63,7 +62,7 @@ class TopicoService(
     }
 
     fun atualizar(topico: AtualizacaoTopicoForm): TopicoView {
-        val topicoEncontrado = findTopicoById(topico.id)
+        val topicoEncontrado = findTopicoById(topico.id).orElseThrow{NotFoundException(notFoundMessage)}
         val newElement = Topico(
             id = topico.id,
             titulo = topico.titulo,
@@ -79,7 +78,7 @@ class TopicoService(
     }
 
     fun deletar(id: Long) {
-        val topicoEncontrado = findTopicoById(id)
+        val topicoEncontrado = findTopicoById(id).get()
         topicos = topicos.minus(topicoEncontrado)
     }
 }
