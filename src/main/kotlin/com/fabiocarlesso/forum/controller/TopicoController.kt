@@ -6,6 +6,9 @@ import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.service.TopicoService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,8 +18,11 @@ import org.springframework.web.util.UriComponentsBuilder
 @RequestMapping("/topicos")
 class TopicoController(private val service: TopicoService) {
     @GetMapping
-    fun listar(@RequestParam(required = false) nomeCurso: String?): List<TopicoView>{
-        return service.listar(nomeCurso)
+    fun listar(
+        @RequestParam(required = false) nomeCurso: String?,
+        @PageableDefault(size = 5) paginacao: Pageable
+    ): Page<TopicoView>{
+        return service.listar(nomeCurso, paginacao)
     }
     @GetMapping("/{id}")
     fun buscarPorId(@PathVariable id: Long): TopicoView {
