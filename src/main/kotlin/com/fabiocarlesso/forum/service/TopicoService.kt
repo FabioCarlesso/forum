@@ -2,6 +2,7 @@ package com.fabiocarlesso.forum.service
 
 import com.fabiocarlesso.forum.dto.AtualizacaoTopicoForm
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
+import com.fabiocarlesso.forum.dto.TopicoPorCategoriaDto
 import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.exception.NotFoundException
 import com.fabiocarlesso.forum.mapper.TopicoFormMapper
@@ -49,5 +50,9 @@ class TopicoService(
 
     fun deletar(id: Long) {
         repository.deleteById(id)
+    }
+
+    fun relatorio(): List<TopicoPorCategoriaDto> {
+        return repository.relatorio()
     }
 }

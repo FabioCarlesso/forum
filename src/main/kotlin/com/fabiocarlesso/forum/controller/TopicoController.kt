@@ -2,6 +2,7 @@ package com.fabiocarlesso.forum.controller
 
 import com.fabiocarlesso.forum.dto.AtualizacaoTopicoForm
 import com.fabiocarlesso.forum.dto.NovoTopicoForm
+import com.fabiocarlesso.forum.dto.TopicoPorCategoriaDto
 import com.fabiocarlesso.forum.dto.TopicoView
 import com.fabiocarlesso.forum.service.TopicoService
 import jakarta.transaction.Transactional
@@ -34,7 +35,7 @@ class TopicoController(private val service: TopicoService) {
     }
     @PostMapping
     @Transactional
-    @CacheEvict(value = ["topicos"], allEntries = true)
+    @CacheEvict(value = ["topicos","relatorio"], allEntries = true)
     fun cadastrar(
         @RequestBody @Valid topico: NovoTopicoForm,
         uriBuilder: UriComponentsBuilder
@@ -45,7 +46,7 @@ class TopicoController(private val service: TopicoService) {
     }
     @PutMapping
     @Transactional
-    @CacheEvict(value = ["topicos"], allEntries = true)
+    @CacheEvict(value = ["topicos","relatorio"], allEntries = true)
     fun atualizar(@RequestBody @Valid topico: AtualizacaoTopicoForm): ResponseEntity<TopicoView>{
         val topicoView = service.atualizar(topico)
         return ResponseEntity.ok(topicoView)
@@ -53,8 +54,13 @@ class TopicoController(private val service: TopicoService) {
     @DeleteMapping("/{id}")
     @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = ["topicos"], allEntries = true)
+    @CacheEvict(value = ["topicos","relatorio"], allEntries = true)
     fun deletar(@PathVariable id: Long){
         return service.deletar(id)
+    }
+    @GetMapping("/relatorio")
+    @Cacheable("relatorio")
+    fun relatorio(): List<TopicoPorCategoriaDto> {
+        return service.relatorio()
     }
 }
