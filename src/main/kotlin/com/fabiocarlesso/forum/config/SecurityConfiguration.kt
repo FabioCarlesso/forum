@@ -14,8 +14,9 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfiguration () {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests {
-                authz -> authz.anyRequest().authenticated()
+        http.authorizeHttpRequests { authz -> authz
+                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
+                .anyRequest().authenticated()
             }
             .formLogin { }
             .httpBasic(withDefaults())
