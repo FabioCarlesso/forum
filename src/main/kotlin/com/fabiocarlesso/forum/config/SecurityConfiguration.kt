@@ -1,22 +1,39 @@
 package com.fabiocarlesso.forum.config
 
+import com.fabiocarlesso.forum.secret.JWTLoginFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer.withDefaults
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfiguration () {
+class SecurityConfiguration (
+    private val configuration: AuthenticationConfiguration,
+    private val jwtUtil: JWTUtil
+) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests { authz -> authz
-                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
+        http.authorizeHttpRequests { it
+//                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
+                .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated()
+            }
+            .addFilterBefore(
+                JWTLoginFilter(
+                    authManager = configuration.authenticationManager,
+                    jwtUtil = jwtUtil
+                ), UsernamePasswordAuthenticationFilter::class.java
+            )
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .formLogin { }
             .httpBasic(withDefaults())
