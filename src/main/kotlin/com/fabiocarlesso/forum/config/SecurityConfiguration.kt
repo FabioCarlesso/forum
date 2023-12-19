@@ -1,9 +1,10 @@
 package com.fabiocarlesso.forum.config
 
+import com.fabiocarlesso.forum.security.JWTAuthenticationFilter
 import com.fabiocarlesso.forum.security.JWTLoginFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.Customizer.withDefaults
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.filter.OncePerRequestFilter
 
 
 @Configuration
@@ -23,7 +25,7 @@ class SecurityConfiguration (
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests { it
 //                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
-                .requestMatchers("/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated()
             }
             .addFilterBefore(
@@ -32,11 +34,13 @@ class SecurityConfiguration (
                     jwtUtil = jwtUtil
                 ), UsernamePasswordAuthenticationFilter::class.java
             )
+            .addFilterBefore(
+                JWTAuthenticationFilter(jwtUtil = jwtUtil),
+                OncePerRequestFilter::class.java
+            )
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            .formLogin { }
-            .httpBasic(withDefaults())
 
         return http.build()
     }
