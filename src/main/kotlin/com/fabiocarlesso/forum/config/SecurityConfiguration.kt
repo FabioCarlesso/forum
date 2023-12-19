@@ -1,6 +1,6 @@
 package com.fabiocarlesso.forum.config
 
-import com.fabiocarlesso.forum.secret.JWTLoginFilter
+import com.fabiocarlesso.forum.security.JWTLoginFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer.withDefaults

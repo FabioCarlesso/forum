@@ -1,4 +1,4 @@
-package com.fabiocarlesso.forum.secret
+package com.fabiocarlesso.forum.security
 
 import com.fabiocarlesso.forum.config.JWTUtil
 import com.fabiocarlesso.forum.model.Credentials
