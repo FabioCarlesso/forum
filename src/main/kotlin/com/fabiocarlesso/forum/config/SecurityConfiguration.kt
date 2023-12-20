@@ -23,7 +23,10 @@ class SecurityConfiguration (
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests { it
+        http.csrf {
+                it.disable()
+            }
+            .authorizeHttpRequests { it
 //                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated()
