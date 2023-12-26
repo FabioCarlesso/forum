@@ -25,7 +25,7 @@ class SecurityConfiguration (
                 it.disable()
             }
             .authorizeHttpRequests { it
-//                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
+                .requestMatchers("/topicos").hasAuthority("LEITURA_ESCRITA")
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated()
             }
