@@ -11,6 +11,7 @@ import com.fabiocarlesso.forum.repository.TopicoRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class TopicoService(
@@ -44,6 +45,7 @@ class TopicoService(
         val topicoEncontrado = repository.findById(topico.id).orElseThrow{NotFoundException(notFoundMessage)}
         topicoEncontrado.titulo = topico.titulo
         topicoEncontrado.mensagem = topico.mensagem
+        topicoEncontrado.dataAlteracao = LocalDateTime.now()
         repository.save(topicoEncontrado)
         return topicoViewMapper.map(topicoEncontrado)
     }
