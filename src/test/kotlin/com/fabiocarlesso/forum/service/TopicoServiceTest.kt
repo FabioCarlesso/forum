@@ -9,9 +9,11 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 
 class TopicoServiceTest {
     val topicos = PageImpl(listOf(TopicoTest.build()))
+    val paginacao: Pageable = mockk()
     val topicoRepository: TopicoRepository = mockk{
         every {
             findByCursoNome(any(), any())
@@ -19,12 +21,12 @@ class TopicoServiceTest {
     }
     val topicoViewMapper: TopicoViewMapper = mockk()
     val topicoFormMapper: TopicoFormMapper = mockk()
-
     val topicoService = TopicoService(
         topicoRepository, topicoViewMapper, topicoFormMapper
     )
-
     @Test
-    fun listar() {
+    fun `deve listar a partir do nome do curso`() {
+//        every { topicoViewMapper}
+        topicoService.listar("Kotlin avançado", paginacao)
     }
 }
