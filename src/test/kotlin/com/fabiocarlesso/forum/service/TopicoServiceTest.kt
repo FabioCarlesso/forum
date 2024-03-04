@@ -3,9 +3,11 @@ package com.fabiocarlesso.forum.service
 import com.fabiocarlesso.forum.mapper.TopicoFormMapper
 import com.fabiocarlesso.forum.mapper.TopicoViewMapper
 import com.fabiocarlesso.forum.model.TopicoTest
+import com.fabiocarlesso.forum.model.TopicoViewTest
 import com.fabiocarlesso.forum.repository.TopicoRepository
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 
 import org.springframework.data.domain.PageImpl
@@ -26,7 +28,10 @@ class TopicoServiceTest {
     )
     @Test
     fun `deve listar a partir do nome do curso`() {
-//        every { topicoViewMapper}
+        every { topicoViewMapper.map(any()) } returns TopicoViewTest.build()
         topicoService.listar("Kotlin avançado", paginacao)
+        verify (exactly = 1) { topicoRepository.findByCursoNome(any(), any()) }
+        verify (exactly = 1) { topicoViewMapper.map(any()) }
+        verify (exactly = 0) { topicoRepository.findAll(paginacao) }
     }
 }
