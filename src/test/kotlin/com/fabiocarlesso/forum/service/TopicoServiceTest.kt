@@ -24,7 +24,7 @@ class TopicoServiceTest {
         every { findByCursoNome(any(), any()) } returns topicos
         every { findAll(paginacao) } returns topicos
     }
-    private val topicoViewMapper: TopicoViewMapper = mockk(){
+    private val topicoViewMapper: TopicoViewMapper = mockk{
         every { map(any()) } returns TopicoViewTest.build()
     }
     private val topicoFormMapper: TopicoFormMapper = mockk()
