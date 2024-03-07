@@ -1,5 +1,6 @@
 package com.fabiocarlesso.forum.service
 
+import com.fabiocarlesso.forum.exception.NotFoundException
 import com.fabiocarlesso.forum.mapper.TopicoFormMapper
 import com.fabiocarlesso.forum.mapper.TopicoViewMapper
 import com.fabiocarlesso.forum.model.TopicoTest
@@ -8,10 +9,13 @@ import com.fabiocarlesso.forum.repository.TopicoRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import java.util.*
 
 class TopicoServiceTest {
     private val topicos = PageImpl(listOf(TopicoTest.build()))
@@ -40,5 +44,15 @@ class TopicoServiceTest {
         verify (exactly = 0) { topicoRepository.findByCursoNome(any(), any()) }
         verify (exactly = 1) { topicoViewMapper.map(any()) }
         verify (exactly = 1) { topicoRepository.findAll(paginacao) }
+    }
+
+    @Test
+    fun `deve listar not found exception quando o topico nao for encontrado`() {
+        every { topicoRepository.findById(any()) } returns Optional.empty()
+        val atual = assertThrows<NotFoundException> {
+            topicoService.buscarPorId(1)
+        }
+
+        assertThat(atual.message).isEqualTo("Topico nao encontrado!")
     }
 }
